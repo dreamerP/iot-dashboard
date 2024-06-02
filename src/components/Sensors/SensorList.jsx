@@ -11,6 +11,19 @@ const SensorList = () => {
   const [showForm, setShowForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
+  const [selectedSensors, setSelectedSensors] = useState([]);
+
+  const handleSelectionChanged = (selectedRows) => {
+    setSelectedSensors(selectedRows.map((row) => row.id));
+  };
+
+  const handleMultipleDelete = async () => {
+    for (const sensorId of selectedSensors) {
+      await sensorService.deleteSensor(sensorId);
+    }
+    setSelectedSensors([]);
+    fetchSensors();
+  };
 
   const handleEdit = (sensor) => {
     setEditingSensor(sensor);
@@ -58,10 +71,11 @@ const SensorList = () => {
           </button>
           <button
             className="bg-red-500 text-white text-md p-1 w-32 rounded-md flex items-center"
-            onClick={() => setShowForm(true)}
+            onClick={handleMultipleDelete}
+            disabled={selectedSensors.length === 0}
           >
             <img src="delete_ico_white.svg" alt="Edit" className="w-6 h-5" />
-            Delete (0)
+            Delete ({selectedSensors.length})
           </button>
         </div>
       </div>
@@ -70,6 +84,7 @@ const SensorList = () => {
           sensors={sensors}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onSelectionChanged={handleSelectionChanged}
         />
         {showForm && (
           <div className="modal">
