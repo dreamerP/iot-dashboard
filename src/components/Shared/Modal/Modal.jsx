@@ -6,7 +6,7 @@ export default function Modal({ open, onClose, title, children }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white rounded-xl  shadow  transition-all ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}
+        className={`bg-white rounded-xl  shadow   transition-all ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}
       >
         <div className="flex justify-between pb-4 bg-gray-50 text-md">
           <h2 className="p-4 text-lg font-sans">{title}</h2>
