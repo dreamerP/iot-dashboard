@@ -1,65 +1,97 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import sensorService from '@/services/sensorService';
 import Modal from '@/components/Shared/Modal/Modal';
 
 const SensorForm = ({ sensor, onClose }) => {
-  const [type, setType] = useState(sensor ? sensor.type : '');
-  const [driver, setDriver] = useState(sensor ? sensor.driver : '');
-  const [status, setStatus] = useState(sensor ? sensor.status : '');
-  const [value, setValue] = useState(sensor ? sensor.value : '');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      type: '',
+      driver: '',
+      status: '',
+      value: null,
+    },
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const sensorData = { type, driver, status, value };
+  useEffect(() => {
     if (sensor) {
-      await sensorService.updateSensor(sensor.id, sensorData);
+      setValue('type', sensor.type);
+      setValue('driver', sensor.driver);
+      setValue('status', sensor.status);
+      setValue('value', sensor.value);
+    }
+  }, [sensor, setValue]);
+
+  const onSubmit = async (data) => {
+    if (sensor) {
+      await sensorService.updateSensor(sensor.id, data);
     } else {
-      await sensorService.createSensor(sensorData);
+      await sensorService.createSensor(data);
     }
     onClose();
   };
 
   return (
-    <Modal open={open} onClose={onClose} title={'Add new sensor'}>
-      <form className="flex flex-col gap-4 min-w-96" onSubmit={handleSubmit}>
+    <Modal
+      open={true}
+      onClose={onClose}
+      title={sensor ? 'Edit Sensor' : 'Add New Sensor'}
+    >
+      <form
+        className="flex flex-col gap-4 min-w-96"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div>
           <label className="block font-bold text-sm mb-1">Type:</label>
           <input
-            className='className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"'
+            className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
+            {...register('type', { required: 'Type is required' })}
           />
+          {errors.type && (
+            <p className="text-red-600 text-sm">{errors.type.message}</p>
+          )}
         </div>
         <div>
           <label className="block font-bold text-sm mb-1">Driver:</label>
           <input
-            className='className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"'
+            className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            value={driver}
-            onChange={(e) => setDriver(e.target.value)}
+            {...register('driver', { required: 'Driver is required' })}
           />
+          {errors.driver && (
+            <p className="text-red-600 text-sm">{errors.driver.message}</p>
+          )}
         </div>
         <div>
           <label className="block font-bold text-sm mb-1">Status:</label>
           <select
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 bg-white rounded"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            {...register('status', { required: 'Status is required' })}
           >
             <option value="">Select status</option>
             <option value="1">Active</option>
             <option value="0">Inactive</option>
           </select>
+          {errors.status && (
+            <p className="text-red-600 text-sm">{errors.status.message}</p>
+          )}
         </div>
         <div>
           <label className="block font-bold text-sm mb-1">Value:</label>
           <input
-            className='className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"'
+            className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            {...register('value', { required: 'Value is required' })}
           />
+          {errors.value && (
+            <p className="text-red-600 text-sm">{errors.value.message}</p>
+          )}
         </div>
         <div className="flex justify-end">
           <button
@@ -72,7 +104,6 @@ const SensorForm = ({ sensor, onClose }) => {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white text-md p-1 w-24 rounded-md"
             type="submit"
-            onClick={handleSubmit}
           >
             Save
           </button>
