@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import sensorService from '@/services/sensorService';
 import Modal from '@/components/Shared/Modal/Modal';
 
-const SensorForm = ({ sensor, onClose }) => {
+const SensorForm = ({ sensor, onClose, fetchSensors }) => {
   const {
     register,
     handleSubmit,
@@ -28,11 +28,13 @@ const SensorForm = ({ sensor, onClose }) => {
   }, [sensor, setValue]);
 
   const onSubmit = async (data) => {
+    data.value = parseFloat(data.value);
     if (sensor) {
       await sensorService.updateSensor(sensor.id, data);
     } else {
       await sensorService.createSensor(data);
     }
+    fetchSensors();
     onClose();
   };
 
@@ -87,7 +89,13 @@ const SensorForm = ({ sensor, onClose }) => {
           <input
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            {...register('value', { required: 'Value is required' })}
+            {...register('value', {
+              required: 'Value is required',
+              validate: {
+                isNumber: (value) =>
+                  !isNaN(parseFloat(value)) || 'Value must be a number',
+              },
+            })}
           />
           {errors.value && (
             <p className="text-red-600 text-sm">{errors.value.message}</p>
@@ -105,7 +113,7 @@ const SensorForm = ({ sensor, onClose }) => {
             className="bg-blue-500 hover:bg-blue-700 text-white text-md p-1 w-24 rounded-md"
             type="submit"
           >
-            Save
+            {sensor ? 'Update' : 'Save'}
           </button>
         </div>
       </form>
