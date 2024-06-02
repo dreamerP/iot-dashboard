@@ -3,7 +3,6 @@ import { AgGridReact } from 'ag-grid-react';
 import ActionButtons from '@/components/Shared/ActionButtons/ActionButtons';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import ConfirmationModal from '@/components/Shared/ConfirmationForm/ConfirmationForm';
 
 const SensorTable = ({ sensors, onEdit, onDelete }) => {
   const columnDefs = useMemo(
@@ -14,9 +13,8 @@ const SensorTable = ({ sensors, onEdit, onDelete }) => {
         headerName: 'Status',
         field: 'status',
         cellRenderer: ({ value }) => (value ? 'Active' : 'Inactive'),
-        cellStyle: { textAlign: 'center' },
       },
-      { headerName: 'Value', field: 'value', cellStyle: { textAlign: 'center' } },
+      { headerName: 'Value', field: 'value' },
       {
         headerName: 'Actions',
         field: 'actions',
