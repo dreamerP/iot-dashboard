@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import sensorService from '@/services/sensorService';
 import Modal from '@/components/Shared/Modal/Modal';
 
-const SensorForm = ({ sensor, onClose, fetchSensors }) => {
+const SensorForm = ({ sensor, onClose }) => {
   const {
     register,
     handleSubmit,
@@ -34,7 +34,6 @@ const SensorForm = ({ sensor, onClose, fetchSensors }) => {
     } else {
       await sensorService.createSensor(data);
     }
-    fetchSensors();
     onClose();
   };
 
