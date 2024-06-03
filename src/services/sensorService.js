@@ -25,7 +25,7 @@ class SensorService {
   async createSensor(sensor) {
     try {
       const response = await axios.post(`${API_URL}/sensors`, sensor);
-      await publishMessage('sensor.created', sensor);
+      //await publishMessage('sensor.created', sensor);
       return response.data;
     } catch (error) {
       console.error('Error al crear el sensor:', error);
@@ -36,7 +36,7 @@ class SensorService {
   async updateSensor(id, sensor) {
     try {
       const response = await axios.put(`${API_URL}/sensors/${id}`, sensor);
-      await publishMessage('sensor.updated', sensor);
+      //await publishMessage('sensor.updated', sensor);
       return response.data;
     } catch (error) {
       console.error('Error al actualizar el sensor:', error);
@@ -46,8 +46,9 @@ class SensorService {
 
   async deleteSensor(id) {
     try {
-      await axios.delete(`${API_URL}/sensors/${id}`);
-      await publishMessage('sensor.deleted', { id });
+      const response = await axios.delete(`${API_URL}/sensors/${id}`);
+      //await publishMessage('sensor.deleted', { id });
+      return response.data
     } catch (error) {
       console.error('Error al eliminar el sensor:', error);
       throw error;
