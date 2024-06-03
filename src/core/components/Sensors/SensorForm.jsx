@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import sensorService from '@/services/sensorService';
-import Modal from '@/components/Shared/Modal/Modal';
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import sensorService from "@/services/sensorService";
+import Modal from "@/core/components/Shared/Modal/Modal";
+import { useAuth } from "@/core/context/AuthContext";
 
 const SensorForm = ({ sensor, onClose }) => {
   const {
@@ -11,37 +12,43 @@ const SensorForm = ({ sensor, onClose }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      type: '',
-      driver: '',
-      status: '',
+      type: "",
+      driver: "",
+      status: "",
       value: null,
     },
   });
-
+  const { showSnackbar } = useAuth();
   useEffect(() => {
     if (sensor) {
-      setValue('type', sensor.type);
-      setValue('driver', sensor.driver);
-      setValue('status', sensor.status);
-      setValue('value', sensor.value);
+      setValue("type", sensor.type);
+      setValue("driver", sensor.driver);
+      setValue("status", sensor.status);
+      setValue("value", sensor.value);
     }
   }, [sensor, setValue]);
 
   const onSubmit = async (data) => {
-    data.value = parseFloat(data.value);
-    if (sensor) {
-      await sensorService.updateSensor(sensor.id, data);
-    } else {
-      await sensorService.createSensor(data);
+    try {
+      data.value = parseFloat(data.value);
+      if (sensor) {
+        await sensorService.updateSensor(sensor.id, data);
+        showSnackbar("Sensor updated successfully!", "success");
+      } else {
+        await sensorService.createSensor(data);
+        showSnackbar("Sensor created successfully!", "success");
+      }
+      onClose();
+    } catch (error) {
+      showSnackbar("Failed to save sensor.", "error");
     }
-    onClose();
   };
 
   return (
     <Modal
       open={true}
       onClose={onClose}
-      title={sensor ? 'Edit Sensor' : 'Add New Sensor'}
+      title={sensor ? "Edit Sensor" : "Add New Sensor"}
     >
       <form
         className="flex flex-col gap-4 min-w-96"
@@ -56,7 +63,7 @@ const SensorForm = ({ sensor, onClose }) => {
             name="type"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            {...register('type', { required: 'Type is required' })}
+            {...register("type", { required: "Type is required" })}
           />
           {errors.type && (
             <p className="text-red-600 text-sm">{errors.type.message}</p>
@@ -71,7 +78,7 @@ const SensorForm = ({ sensor, onClose }) => {
             name="driver"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            {...register('driver', { required: 'Driver is required' })}
+            {...register("driver", { required: "Driver is required" })}
           />
           {errors.driver && (
             <p className="text-red-600 text-sm">{errors.driver.message}</p>
@@ -85,7 +92,7 @@ const SensorForm = ({ sensor, onClose }) => {
             id="status"
             name="status"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 bg-white rounded"
-            {...register('status', { required: 'Status is required' })}
+            {...register("status", { required: "Status is required" })}
           >
             <option value="">Select status</option>
             <option value="1">Active</option>
@@ -104,11 +111,11 @@ const SensorForm = ({ sensor, onClose }) => {
             name="value"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            {...register('value', {
-              required: 'Value is required',
+            {...register("value", {
+              required: "Value is required",
               validate: {
                 isNumber: (value) =>
-                  !isNaN(parseFloat(value)) || 'Value must be a number',
+                  !isNaN(parseFloat(value)) || "Value must be a number",
               },
             })}
           />
@@ -128,7 +135,7 @@ const SensorForm = ({ sensor, onClose }) => {
             className="bg-blue-500 hover:bg-blue-700 text-white text-md p-1 w-24 rounded-md"
             type="submit"
           >
-            {sensor ? 'Update' : 'Save'}
+            {sensor ? "Update" : "Save"}
           </button>
         </div>
       </form>

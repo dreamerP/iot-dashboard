@@ -4,9 +4,9 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { AuthProvider } from "@/context/AuthContext.jsx";
-import PrivateRoute from "@/router/PrivateRoute.jsx";
-import Login from "@/components/Login/LoginForm";
+import { AuthProvider } from "@/core/context/AuthContext.jsx";
+import PrivateRoute from "@/core/router/PrivateRoute.jsx";
+import Login from "@/core/components/Login/LoginForm";
 import Dashboard from "@/pages/Dashboard";
 
 const AppRouter = () => (

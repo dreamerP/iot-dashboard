@@ -1,6 +1,6 @@
-import DefaultLayout from '@/components/Layout/DefaultLayout';
-import React from 'react';
-import SensorList from '@/components/Sensors/SensorList';
+import DefaultLayout from "@/core/components/Layout/DefaultLayout";
+import SensorList from "@/core/components/Sensors/SensorList";
+import React from "react";
 
 const Dashboard = () => {
   return (
