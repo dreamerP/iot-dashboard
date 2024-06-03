@@ -1,4 +1,3 @@
-// src/services/natsService.js
 import { connect, StringCodec } from 'nats.ws';
 
 const sc = StringCodec();
