@@ -48,8 +48,12 @@ const SensorForm = ({ sensor, onClose }) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div>
-          <label className="block font-bold text-sm mb-1">Type:</label>
+          <label htmlFor="type" className="block font-bold text-sm mb-1">
+            Type:
+          </label>
           <input
+            id="type"
+            name="type"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             {...register('type', { required: 'Type is required' })}
@@ -59,8 +63,12 @@ const SensorForm = ({ sensor, onClose }) => {
           )}
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">Driver:</label>
+          <label htmlFor="driver" className="block font-bold text-sm mb-1">
+            Driver:
+          </label>
           <input
+            id="driver"
+            name="driver"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             {...register('driver', { required: 'Driver is required' })}
@@ -70,8 +78,12 @@ const SensorForm = ({ sensor, onClose }) => {
           )}
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">Status:</label>
+          <label htmlFor="status" className="block font-bold text-sm mb-1">
+            Status:
+          </label>
           <select
+            id="status"
+            name="status"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 bg-white rounded"
             {...register('status', { required: 'Status is required' })}
           >
@@ -84,8 +96,12 @@ const SensorForm = ({ sensor, onClose }) => {
           )}
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">Value:</label>
+          <label htmlFor="value" className="block font-bold text-sm mb-1">
+            Value:
+          </label>
           <input
+            id="value"
+            name="value"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             {...register('value', {
