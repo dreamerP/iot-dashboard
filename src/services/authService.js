@@ -1,45 +1,60 @@
-import axios from "axios";
+import axios from '@/core/axios/Axios';
 
-const API_URL = "http://localhost:3000/api";
+class AuthService {
+  constructor() {
+    this.apiURL = '/auth';
+  }
 
-const authService = {
-  login: async (username = "admin", password = "admin") => {
-    const response = await axios.post(`${API_URL}/auth/login`, {
-      username,
-      password,
-    });
-    const { token } = response.data;
-    if (token) {
-      localStorage.setItem('token', token);
+  async login(username = "admin", password = "admin") {
+    try {
+      const response = await axios.post(`${this.apiURL}/login`, { username, password });
+      const { token } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error during login:", error);
+      throw error;
     }
-    return response.data;
-  },
+  }
 
-  logout: async () => {
-    localStorage.removeItem('token');
-    await axios.post(`${API_URL}/auth/logout`);
-  },
-
-  refreshTokens: async (refreshToken) => {
-    const response = await axios.post(`${API_URL}/auth/refresh`, {
-      refreshToken,
-    });
-    const { token } = response.data;
-    if (token) {
-      localStorage.setItem('token', token);
+  async logout() {
+    try {
+      localStorage.removeItem('token');
+      await axios.post(`${this.apiURL}/logout`);
+    } catch (error) {
+      console.error("Error during logout:", error);
+      throw error;
     }
-    return response.data;
-  },
-  checkAuth: async () => {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No token found');
-    const response = await axios.get(`${API_URL}/auth/checkAuth`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  },
-};
+  }
 
+  async refreshTokens(refreshToken) {
+    try {
+      const response = await axios.post(`${this.apiURL}/refresh`, { refreshToken });
+      const { token } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error during token refresh:", error);
+      throw error;
+    }
+  }
+
+  async checkAuth() {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const response = await axios.get(`${this.apiURL}/checkAuth`);
+      return response.data;
+    } catch (error) {
+      console.error("Error during authentication check:", error);
+      throw error;
+    }
+  }
+}
+
+const authService = new AuthService();
 export default authService;

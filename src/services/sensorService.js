@@ -1,5 +1,5 @@
-import axios from "@/axios/Axios";
-import { subscribeToMessages, publishMessage } from "./natsService";
+import axios from "@/core/axios/Axios";
+import natsService from '@/services/natsService';
 
 let instance = null;
 
@@ -12,50 +12,30 @@ class SensorService {
   }
 
   async getAllSensors() {
-    try {
-      const response = await axios.get(`/sensors`);
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener los sensores:", error);
-      throw error;
-    }
+    const response = await axios.get(`/sensors`);
+    return response.data;
   }
 
   async createSensor(sensor) {
-    try {
-      const response = await axios.post(`/sensors`, sensor);
-      await publishMessage("sensor.created", sensor);
-      return response.data;
-    } catch (error) {
-      console.error("Error al crear el sensor:", error);
-      throw error;
-    }
+    const response = await axios.post(`/sensors`, sensor);
+    await natsService.publish("sensor.created", sensor);
+    return response.data;
   }
 
   async updateSensor(id, sensor) {
-    try {
-      const response = await axios.put(`/sensors/${id}`, sensor);
-      await publishMessage("sensor.updated", sensor);
-      return response.data;
-    } catch (error) {
-      console.error("Error al actualizar el sensor:", error);
-      throw error;
-    }
+    const response = await axios.put(`/sensors/${id}`, sensor);
+    await natsService.publish("sensor.updated", sensor);
+    return response.data;
   }
 
   async deleteSensor(id) {
-    try {
-      const response = await axios.delete(`/sensors/${id}`);
-      await publishMessage("sensor.deleted", { id });
-      return response.data;
-    } catch (error) {
-      console.error("Error al eliminar el sensor:", error);
-      throw error;
-    }
+    const response = await axios.delete(`/sensors/${id}`);
+    await natsService.publish("sensor.deleted", { id });
+    return response.data;
   }
 
   async subscribeToSensorMessages(topic, callback) {
-    await subscribeToMessages(topic, callback);
+    await natsService.subscribe(topic, callback);
   }
 }
 
