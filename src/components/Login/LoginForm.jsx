@@ -1,17 +1,23 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onSubmit = async (data) => {
-    const success = true;
-    if (success) {
-      navigate('/dashboard');
-    } else {
-      alert('Invalid credentials');
+    try {
+      await login(data.username, data.password);
+      navigate("/dashboard");
+    } catch (error) {
+      alert("Invalid credentials");
     }
   };
 
@@ -28,20 +34,24 @@ export default function LoginForm() {
         </div>
 
         <input
-          className={`text-sm w-full px-4 py-2 border border-solid ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded`}
+          className={`text-sm w-full px-4 py-2 border border-solid ${errors.username ? "border-red-500" : "border-gray-300"} rounded`}
           type="text"
           placeholder="Email Address"
-          {...register('username', { required: 'Email Address is required' })}
+          {...register("username", { required: "Email Address is required" })}
         />
-        {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
+        {errors.username && (
+          <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>
+        )}
 
         <input
-          className={`text-sm w-full px-4 py-2 border border-solid ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded mt-4`}
+          className={`text-sm w-full px-4 py-2 border border-solid ${errors.password ? "border-red-500" : "border-gray-300"} rounded mt-4`}
           type="password"
           placeholder="Password"
-          {...register('password', { required: 'Password is required' })}
+          {...register("password", { required: "Password is required" })}
         />
-        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+        )}
 
         <div className="mt-4 flex justify-between font-semibold text-sm">
           <label className="flex text-slate-500 hover:text-slate-600 cursor-pointer">
@@ -64,7 +74,7 @@ export default function LoginForm() {
           </button>
         </div>
         <div className="mt-4 font-semibold text-sm text-slate-500 text-center md:text-left">
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <a
             className="text-blue-500 hover:underline hover:underline-offset-4"
             href="#"
