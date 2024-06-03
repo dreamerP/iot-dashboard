@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const cors = require('cors'); // Importa el middleware cors
 const authRoutes = require('./routes/authRoutes');
 const sensorRoutes = require('./routes/sensorRoutes');
 
@@ -9,6 +10,8 @@ const app = express();
 
 app.use(express.json());
 app.use(passport.initialize());
+
+app.use(cors());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/sensors', sensorRoutes);
