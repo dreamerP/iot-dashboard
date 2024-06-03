@@ -28,6 +28,7 @@ const SensorForm = ({ sensor, onClose }) => {
   }, [sensor, setValue]);
 
   const onSubmit = async (data) => {
+    data.value = parseFloat(data.value);
     if (sensor) {
       await sensorService.updateSensor(sensor.id, data);
     } else {
@@ -47,8 +48,12 @@ const SensorForm = ({ sensor, onClose }) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div>
-          <label className="block font-bold text-sm mb-1">Type:</label>
+          <label htmlFor="type" className="block font-bold text-sm mb-1">
+            Type:
+          </label>
           <input
+            id="type"
+            name="type"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             {...register('type', { required: 'Type is required' })}
@@ -58,8 +63,12 @@ const SensorForm = ({ sensor, onClose }) => {
           )}
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">Driver:</label>
+          <label htmlFor="driver" className="block font-bold text-sm mb-1">
+            Driver:
+          </label>
           <input
+            id="driver"
+            name="driver"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             {...register('driver', { required: 'Driver is required' })}
@@ -69,8 +78,12 @@ const SensorForm = ({ sensor, onClose }) => {
           )}
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">Status:</label>
+          <label htmlFor="status" className="block font-bold text-sm mb-1">
+            Status:
+          </label>
           <select
+            id="status"
+            name="status"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 bg-white rounded"
             {...register('status', { required: 'Status is required' })}
           >
@@ -83,11 +96,21 @@ const SensorForm = ({ sensor, onClose }) => {
           )}
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">Value:</label>
+          <label htmlFor="value" className="block font-bold text-sm mb-1">
+            Value:
+          </label>
           <input
+            id="value"
+            name="value"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
-            {...register('value', { required: 'Value is required' })}
+            {...register('value', {
+              required: 'Value is required',
+              validate: {
+                isNumber: (value) =>
+                  !isNaN(parseFloat(value)) || 'Value must be a number',
+              },
+            })}
           />
           {errors.value && (
             <p className="text-red-600 text-sm">{errors.value.message}</p>
@@ -105,7 +128,7 @@ const SensorForm = ({ sensor, onClose }) => {
             className="bg-blue-500 hover:bg-blue-700 text-white text-md p-1 w-24 rounded-md"
             type="submit"
           >
-            Save
+            {sensor ? 'Update' : 'Save'}
           </button>
         </div>
       </form>

@@ -3,28 +3,34 @@ import SensorTable from '@/components/Sensors/SensorTable';
 import SensorForm from '@/components/Sensors/SensorForm';
 import sensorService from '@/services/sensorService';
 import ConfirmationModal from '@/components/Shared/ConfirmationForm/ConfirmationForm';
+import useSensors from '@/hooks/useSensors';
 
 const SensorList = () => {
-  const [sensors, setSensors] = useState([]);
+  const { sensors, fetchSensors, loading } = useSensors();
   const [editingSensor, setEditingSensor] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
+  const [selectedSensors, setSelectedSensors] = useState([]);
 
-  useEffect(() => {
-    const fetchSensors = async () => {
-      const sensors = await sensorService.getAllSensors();
-      setSensors(sensors);
-    };
+  const handleSelectionChanged = (selectedRows) => {
+    setSelectedSensors(selectedRows.map((row) => row.id));
+  };
+
+  const handleMultipleDelete = async () => {
+    for (const sensorId of selectedSensors) {
+      await sensorService.deleteSensor(sensorId);
+    }
+    setSelectedSensors([]);
     fetchSensors();
-  }, []);
+  };
 
   const handleEdit = (sensor) => {
     setEditingSensor(sensor);
     setShowForm(true);
   };
 
-  const handleDelete = async (sensor) => {
+  const handleDelete = (sensor) => {
     setSelectedSensor(sensor);
     setShowModal(true);
   };
@@ -32,7 +38,7 @@ const SensorList = () => {
   const handleConfirmDelete = async () => {
     if (selectedSensor) {
       await sensorService.deleteSensor(selectedSensor.id);
-      setSensors(sensors.filter((s) => s.id !== selectedSensor.id));
+      fetchSensors();
     }
     setShowModal(false);
     setSelectedSensor(null);
@@ -46,6 +52,7 @@ const SensorList = () => {
   const handleCloseForm = () => {
     setEditingSensor(null);
     setShowForm(false);
+    fetchSensors();
   };
 
   return (
@@ -54,7 +61,7 @@ const SensorList = () => {
         <div className="flex text-2xl font-sans text-slate-600 p-3">
           <h3>Sensor List</h3>
         </div>
-        <div className=" flex justify-end p-3">
+        <div className="flex justify-end p-3">
           <button
             className="bg-blue-500 text-white text-md p-1 w-32 rounded-md mr-4 flex items-center"
             onClick={() => setShowForm(true)}
@@ -64,10 +71,11 @@ const SensorList = () => {
           </button>
           <button
             className="bg-red-500 text-white text-md p-1 w-32 rounded-md flex items-center"
-            onClick={() => setShowForm(true)}
+            onClick={handleMultipleDelete}
+            disabled={selectedSensors.length === 0}
           >
             <img src="delete_ico_white.svg" alt="Edit" className="w-6 h-5" />
-            Delete (0)
+            Delete ({selectedSensors.length})
           </button>
         </div>
       </div>
@@ -76,6 +84,7 @@ const SensorList = () => {
           sensors={sensors}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onSelectionChanged={handleSelectionChanged}
         />
         {showForm && (
           <div className="modal">
