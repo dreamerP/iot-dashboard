@@ -9,15 +9,16 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, showSnackbar } = useAuth();
 
   const onSubmit = async (data) => {
     try {
       await login(data.username, data.password);
       navigate("/dashboard");
     } catch (error) {
-      alert("Invalid credentials");
+      showSnackbar("Invalid credentials", "error");
     }
   };
 

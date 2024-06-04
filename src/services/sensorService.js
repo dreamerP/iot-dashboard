@@ -3,6 +3,12 @@ import natsService from '@/services/natsService';
 
 let instance = null;
 
+/**
+ * SensorService
+ * 
+ * Servicio singleton para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) 
+ * en sensores y publicar eventos a través de NATS.
+ */
 class SensorService {
   constructor() {
     if (!instance) {
@@ -11,31 +17,55 @@ class SensorService {
     return instance;
   }
 
+   /**
+   * Obtiene todos los sensores.
+   * 
+   * @returns {Promise<Object[]>} Una promesa que resuelve con un array de sensores.
+   * @throws {Error} Error durante la obtención de los sensores.
+   */
   async getAllSensors() {
     const response = await axios.get(`/sensors`);
     return response.data;
   }
 
+   /**
+   * Crea un nuevo sensor.
+   * 
+   * @param {Object} sensor - Los datos del sensor a crear.
+   * @returns {Promise<Object>} Una promesa que resuelve con los datos del sensor creado.
+   * @throws {Error} Error durante la creación del sensor.
+   */
   async createSensor(sensor) {
     const response = await axios.post(`/sensors`, sensor);
     await natsService.publish("sensor.created", sensor);
     return response.data;
   }
 
+  /**
+   * Actualiza un sensor existente.
+   * 
+   * @param {number} id - El ID del sensor a actualizar.
+   * @param {Object} sensor - Los nuevos datos del sensor.
+   * @returns {Promise<Object>} Una promesa que resuelve con los datos actualizados del sensor.
+   * @throws {Error} Error durante la actualización del sensor.
+   */
   async updateSensor(id, sensor) {
     const response = await axios.put(`/sensors/${id}`, sensor);
     await natsService.publish("sensor.updated", sensor);
     return response.data;
   }
 
+  /**
+   * Elimina un sensor.
+   * 
+   * @param {number} id - El ID del sensor a eliminar.
+   * @returns {Promise<Object>} Una promesa que resuelve con los datos del sensor eliminado.
+   * @throws {Error} Error durante la eliminación del sensor.
+   */
   async deleteSensor(id) {
     const response = await axios.delete(`/sensors/${id}`);
     await natsService.publish("sensor.deleted", { id });
     return response.data;
-  }
-
-  async subscribeToSensorMessages(topic, callback) {
-    await natsService.subscribe(topic, callback);
   }
 }
 

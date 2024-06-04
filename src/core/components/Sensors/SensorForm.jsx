@@ -18,7 +18,9 @@ const SensorForm = ({ sensor, onClose }) => {
       value: null,
     },
   });
+
   const { showSnackbar } = useAuth();
+  
   useEffect(() => {
     if (sensor) {
       setValue("type", sensor.type);
