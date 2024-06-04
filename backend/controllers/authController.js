@@ -1,6 +1,6 @@
 const authService = require("../services/authService");
 const jwtUtils = require("../utils/jwtUtils");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 exports.login = (req, res) => {
   const { username, password } = req.body;

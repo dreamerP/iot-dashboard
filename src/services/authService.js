@@ -36,22 +36,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Cierra la sesión del usuario.
-   *
-   * @returns {Promise<void>}
-   * @throws {Error} Error durante el cierre de sesión.
-   */
-  async logout() {
-    try {
-      localStorage.removeItem("token");
-      await axios.post(`${this.apiURL}/logout`);
-    } catch (error) {
-      console.error("Error during logout:", error);
-      throw error;
-    }
-  }
-
+ 
   /**
    * Refresca el token de autenticación.
    *

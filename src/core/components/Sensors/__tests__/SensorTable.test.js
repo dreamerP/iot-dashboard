@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom'; // Asegúrate de importar esta línea
+import '@testing-library/jest-dom'; 
 
 import SensorTable from '../SensorTable';
 

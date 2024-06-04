@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "backend": "cd backend && node server.js",
+    "frontend": "npm run dev",
     "build": "vite build",
     "test": "jest",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "dependencies": {
     "ag-grid-react": "^31.3.2",
@@ -30,6 +33,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
     "axios-mock-adapter": "^1.22.0",
+    "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
