@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await authService.logout();
+    localStorage.removeItem("token");
     setUser(null);
     setIsAuthenticated(false);
     showSnackbar("Logout successful!", "success");
