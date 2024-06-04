@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import SensorList from '../SensorList';
+import ElementList from '../ElementList';
 import '@testing-library/jest-dom';
 
 const mockShowSnackbar = jest.fn();
@@ -10,16 +10,16 @@ jest.mock('@/core/context/AuthContext', () => ({
   }),
 }));
 
-describe('SensorList component', () => {
+describe('ElementList component', () => {
   it('renders without crashing', () => {
-    render(<SensorList />);
+    render(<ElementList />);
   });
 
-  it('opens form modal when "New Sensor" button is clicked', () => {
-    const { getByText } = render(<SensorList />);
-    const newSensorButton = getByText('New Sensor');
+  it('opens form modal when "New Element" button is clicked', () => {
+    const { getByText } = render(<ElementList />);
+    const newSensorButton = getByText('New Element');
     fireEvent.click(newSensorButton);
-    const sensorFormModal = getByText('Add New Sensor');
+    const sensorFormModal = getByText('Add New Element');
     expect(sensorFormModal).toBeInTheDocument();
   });
 
