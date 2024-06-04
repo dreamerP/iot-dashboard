@@ -102,7 +102,7 @@ const ElementForm = ({ element, onClose }) => {
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 bg-white rounded"
             multiple
             {...register("sensors", {
-              required: "At least one sensor is required",
+              
             })}
           >
             {sensors.map((sensor) => (

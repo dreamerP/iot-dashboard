@@ -40,7 +40,9 @@ const useElements = () => {
     const handleElementDeleted = () => {
       fetchElements();
     };
-
+    //Me suscribo también a lo cambios en los sensores porque los elementos lo utilizan
+    natsService.subscribe("sensor.created", handleSensorCreated);
+    natsService.subscribe("sensor.updated", handleSensorUpdated);
     natsService.subscribe("element.created", handleElementCreated);
     natsService.subscribe("element.updated", handleElementUpdated);
     natsService.subscribe("element.deleted", handleElementDeleted);
