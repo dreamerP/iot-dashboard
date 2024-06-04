@@ -1,9 +1,14 @@
-import axios from 'axios';
-import { publishMessage, subscribeToMessages } from './natsService';
+import axios from "@/core/axios/Axios";
+import natsService from '@/services/natsService';
 
-const API_URL = 'http://localhost:5000';
 let instance = null;
 
+/**
+ * SensorService
+ * 
+ * Servicio singleton para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) 
+ * en sensores y publicar eventos a través de NATS.
+ */
 class SensorService {
   constructor() {
     if (!instance) {
@@ -12,51 +17,55 @@ class SensorService {
     return instance;
   }
 
+   /**
+   * Obtiene todos los sensores.
+   * 
+   * @returns {Promise<Object[]>} Una promesa que resuelve con un array de sensores.
+   * @throws {Error} Error durante la obtención de los sensores.
+   */
   async getAllSensors() {
-    try {
-      const response = await axios.get(`${API_URL}/sensors`);
-      return response.data;
-    } catch (error) {
-      console.error('Error al obtener los sensores:', error);
-      throw error;
-    }
+    const response = await axios.get(`/sensors`);
+    return response.data;
   }
 
+   /**
+   * Crea un nuevo sensor.
+   * 
+   * @param {Object} sensor - Los datos del sensor a crear.
+   * @returns {Promise<Object>} Una promesa que resuelve con los datos del sensor creado.
+   * @throws {Error} Error durante la creación del sensor.
+   */
   async createSensor(sensor) {
-    try {
-      const response = await axios.post(`${API_URL}/sensors`, sensor);
-      //await publishMessage('sensor.created', sensor);
-      return response.data;
-    } catch (error) {
-      console.error('Error al crear el sensor:', error);
-      throw error;
-    }
+    const response = await axios.post(`/sensors`, sensor);
+    await natsService.publish("sensor.created", sensor);
+    return response.data;
   }
 
+  /**
+   * Actualiza un sensor existente.
+   * 
+   * @param {number} id - El ID del sensor a actualizar.
+   * @param {Object} sensor - Los nuevos datos del sensor.
+   * @returns {Promise<Object>} Una promesa que resuelve con los datos actualizados del sensor.
+   * @throws {Error} Error durante la actualización del sensor.
+   */
   async updateSensor(id, sensor) {
-    try {
-      const response = await axios.put(`${API_URL}/sensors/${id}`, sensor);
-      //await publishMessage('sensor.updated', sensor);
-      return response.data;
-    } catch (error) {
-      console.error('Error al actualizar el sensor:', error);
-      throw error;
-    }
+    const response = await axios.put(`/sensors/${id}`, sensor);
+    await natsService.publish("sensor.updated", sensor);
+    return response.data;
   }
 
+  /**
+   * Elimina un sensor.
+   * 
+   * @param {number} id - El ID del sensor a eliminar.
+   * @returns {Promise<Object>} Una promesa que resuelve con los datos del sensor eliminado.
+   * @throws {Error} Error durante la eliminación del sensor.
+   */
   async deleteSensor(id) {
-    try {
-      const response = await axios.delete(`${API_URL}/sensors/${id}`);
-      //await publishMessage('sensor.deleted', { id });
-      return response.data
-    } catch (error) {
-      console.error('Error al eliminar el sensor:', error);
-      throw error;
-    }
-  }
-
-  async subscribeToSensorMessages(topic, callback) {
-    await subscribeToMessages(topic, callback);
+    const response = await axios.delete(`/sensors/${id}`);
+    await natsService.publish("sensor.deleted", { id });
+    return response.data;
   }
 }
 

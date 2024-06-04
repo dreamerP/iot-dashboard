@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import SensorTable from '@/components/Sensors/SensorTable';
-import SensorForm from '@/components/Sensors/SensorForm';
-import sensorService from '@/services/sensorService';
-import ConfirmationModal from '@/components/Shared/ConfirmationForm/ConfirmationForm';
-import useSensors from '@/hooks/useSensors';
+import React, { useState } from "react";
+import SensorTable from "@/core/components/Sensors/SensorTable";
+import SensorForm from "@/core/components/Sensors/SensorForm";
+import sensorService from "@/services/sensorService";
+import ConfirmationModal from "@/core/components/Shared/ConfirmationForm/ConfirmationForm";
+import useSensors from "@/core/hooks/useSensors";
+import { useAuth } from "@/core/context/AuthContext";
 
 const SensorList = () => {
   const { sensors, fetchSensors, loading } = useSensors();
@@ -12,17 +13,23 @@ const SensorList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
   const [selectedSensors, setSelectedSensors] = useState([]);
+  const { showSnackbar } = useAuth();
 
   const handleSelectionChanged = (selectedRows) => {
     setSelectedSensors(selectedRows.map((row) => row.id));
   };
 
   const handleMultipleDelete = async () => {
-    for (const sensorId of selectedSensors) {
-      await sensorService.deleteSensor(sensorId);
+    try {
+      for (const sensorId of selectedSensors) {
+        await sensorService.deleteSensor(sensorId);
+      }
+      setSelectedSensors([]);
+      fetchSensors();
+      showSnackbar("Sensors deleted successfully!", "success");
+    } catch (error) {
+      showSnackbar("Failed to delete sensors.", "error");
     }
-    setSelectedSensors([]);
-    fetchSensors();
   };
 
   const handleEdit = (sensor) => {
@@ -36,12 +43,17 @@ const SensorList = () => {
   };
 
   const handleConfirmDelete = async () => {
-    if (selectedSensor) {
-      await sensorService.deleteSensor(selectedSensor.id);
-      fetchSensors();
+    try {
+      if (selectedSensor) {
+        await sensorService.deleteSensor(selectedSensor.id);
+        fetchSensors();
+        showSnackbar("Sensor deleted successfully!", "success");
+      }
+      setShowModal(false);
+      setSelectedSensor(null);
+    } catch (error) {
+      showSnackbar("Failed to delete sensor.", "error");
     }
-    setShowModal(false);
-    setSelectedSensor(null);
   };
 
   const handleCancelDelete = () => {

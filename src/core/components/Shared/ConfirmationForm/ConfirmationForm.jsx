@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '@/components/Shared/Modal/Modal';
+import Modal from '@/core/components/Shared/Modal/Modal';
 
 const ConfirmationModal = ({ open, title, message, onConfirm, onCancel }) => {
   return (
