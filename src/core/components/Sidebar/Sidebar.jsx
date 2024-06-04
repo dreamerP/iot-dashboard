@@ -6,7 +6,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   const Menus = [
     { title: 'Dashboard', path: '/dashboard', src: '' },
-    { title: 'Elements', path: '/login', src: '' },
+    { title: 'Elements', path: '/elements', src: '' },
   ];
 
   const [mobileMenu, setMobileMenu] = useState(false);
