@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "type": "Temperature",
+    "driver": "Driver1",
+    "status": 1,
+    "value": 25.6
+  },
+  {
+    "id": "2",
+    "type": "Humidity",
+    "driver": "Driver2",
+    "status": 0,
+    "value": 50
+  },
+  {
+    "id": "3",
+    "type": "Humidity1",
+    "driver": "Driver2",
+    "status": 0,
+    "value": 50
+  },
+  {
+    "id": "4",
+    "type": "Humidity2",
+    "driver": "Driver2",
+    "status": 0,
+    "value": 50
+  },
+  {
+    "id": "5",
+    "type": "Humidity3",
+    "driver": "Driver2",
+    "status": 0,
+    "value": 50
+  },
+  {
+    "id": "6",
+    "type": "Humidity4",
+    "driver": "Driver2",
+    "status": 0,
+    "value": 50
+  }
+]

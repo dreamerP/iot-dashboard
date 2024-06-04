@@ -1,0 +1,57 @@
+[
+  {
+    "id": "1",
+    "name": "Element1",
+    "location": "Location1",
+    "sensors": [
+      {
+        "id": "1",
+        "type": "Temperature",
+        "driver": "Driver1",
+        "status": 1,
+        "value": 25.6
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Element2",
+    "location": "Location2",
+    "sensors": [
+      {
+        "id": "2",
+        "type": "Humidity",
+        "driver": "Driver2",
+        "status": 0,
+        "value": 50
+      },
+      {
+        "id": "3",
+        "type": "Humidity2",
+        "driver": "Driver2",
+        "status": 0,
+        "value": 50
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Element3",
+    "location": "Location3",
+    "sensors": []
+  },
+  {
+    "id": "4",
+    "sensors": [
+      {
+        "id": "6",
+        "type": "Humidity4",
+        "driver": "Driver2",
+        "status": 0,
+        "value": 50
+      }
+    ],
+    "name": "Element 5",
+    "location": "Location8"
+  }
+]
