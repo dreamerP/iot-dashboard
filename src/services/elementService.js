@@ -1,12 +1,12 @@
 import axios from "@/core/axios/Axios";
-import natsService from '@/services/natsService';
+import natsService from "@/services/natsService";
 
 let instance = null;
 
 /**
  * ElementService
- * 
- * Servicio singleton para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) 
+ *
+ * Servicio singleton para gestionar las operaciones CRUD (Crear, Leer, Actualizar, Eliminar)
  * en elementos y publicar eventos a través de NATS.
  */
 class ElementService {
@@ -19,7 +19,7 @@ class ElementService {
 
   /**
    * Obtiene todos los elementos.
-   * 
+   *
    * @returns {Promise<Object[]>} Una promesa que resuelve con un array de elementos.
    * @throws {Error} Error durante la obtención de los elementos.
    */
@@ -30,7 +30,7 @@ class ElementService {
 
   /**
    * Crea un nuevo elemento.
-   * 
+   *
    * @param {Object} element - Los datos del elemento a crear.
    * @returns {Promise<Object>} Una promesa que resuelve con los datos del elemento creado.
    * @throws {Error} Error durante la creación del elemento.
@@ -43,7 +43,7 @@ class ElementService {
 
   /**
    * Actualiza un elemento existente.
-   * 
+   *
    * @param {number} id - El ID del elemento a actualizar.
    * @param {Object} element - Los nuevos datos del elemento.
    * @returns {Promise<Object>} Una promesa que resuelve con los datos actualizados del elemento.
@@ -57,7 +57,7 @@ class ElementService {
 
   /**
    * Elimina un elemento.
-   * 
+   *
    * @param {number} id - El ID del elemento a eliminar.
    * @returns {Promise<Object>} Una promesa que resuelve con los datos del elemento eliminado.
    * @throws {Error} Error durante la eliminación del elemento.
@@ -65,7 +65,11 @@ class ElementService {
   async deleteElement(id) {
     const response = await axios.delete(`/elements/${id}`);
     await natsService.publish("element.deleted", { id });
-    return response.data;
+    if (response) {
+      return response.data;
+    } else {
+      throw new Error("Failed to delete element");
+    }
   }
 }
 
