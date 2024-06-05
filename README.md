@@ -37,6 +37,7 @@ To install and run this project locally, follow these steps:
     npm run start
    ```
 This will start both the frontend and backend servers concurrently. Open http://localhost:3000 in your browser to view the app.
+
 **If you only want to start the frontend, you can use:**
 
    ```bash
@@ -61,4 +62,5 @@ This will start both the frontend and backend servers concurrently. Open http://
 - Vite: A fast frontend build tool that provides instant server start and hot module replacement (HMR) during development.
 - NATS: A lightweight and high-performance messaging system for building distributed systems.
 - Tailwind CSS: A utility-first CSS framework for building custom designs without having to leave your HTML.
+- Jest: A delightful JavaScript Testing Framework with a focus on simplicity.
 - Express: A minimalist web framework for Node.js used for building a minimal backend.
