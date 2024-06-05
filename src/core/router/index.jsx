@@ -7,9 +7,8 @@ import {
 import { AuthProvider } from "@/core/context/AuthContext.jsx";
 import PrivateRoute from "@/core/router/PrivateRoute.jsx";
 import Login from "@/core/components/Login/LoginForm";
-import DefaultLayout from "@/core/components/Layout/DefaultLayout";
 import ElementList from "@/core/components/Elements/ElementList";
-import Dashboard from "@/pages/Dashboard";
+import SensorList from "@/core/components/Sensors/SensorList";
 
 const AppRouter = () => (
   <AuthProvider>
@@ -18,25 +17,12 @@ const AppRouter = () => (
         <Route path="/" element={<Navigate to="/login" />} />
         <Route exact path="/login" element={<Login />} />
         <Route
-          exact
           path="/dashboard"
-          element={<PrivateRoute element={<Dashboard />} />}
-        />
-        <Route
-          path="/sensors"
-          element={<PrivateRoute element={<Dashboard />} />}
+          element={<PrivateRoute element={<SensorList />} />}
         />
         <Route
           path="/elements"
-          element={
-            <PrivateRoute
-              element={
-                <DefaultLayout>
-                  <ElementList />
-                </DefaultLayout>
-              }
-            />
-          }
+          element={<PrivateRoute element={<ElementList />} />}
         />
       </Routes>
     </Router>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import elementService from "@/services/elementService";
 import natsService from "@/services/natsService";
+import { useAuth } from "@/core/context/AuthContext";
 
 /**
  * Hook que gestiona el estado de los elementos y sus operaciones relacionadas.
@@ -12,6 +13,7 @@ import natsService from "@/services/natsService";
  *
  */
 const useElements = () => {
+  const { showSnackbar } = useAuth();
   const [elements, setElements] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +22,7 @@ const useElements = () => {
       const elements = await elementService.getAllElements();
       setElements(elements);
     } catch (error) {
-      console.error("Error fetching elements:", error);
+      showSnackbar("Error fetching sensors: " + error.message, "error");
     } finally {
       setLoading(false);
     }
@@ -40,12 +42,17 @@ const useElements = () => {
     const handleElementDeleted = () => {
       fetchElements();
     };
+
     //Me suscribo también a lo cambios en los sensores porque los elementos lo utilizan
-    natsService.subscribe("sensor.created", handleSensorCreated);
-    natsService.subscribe("sensor.updated", handleSensorUpdated);
-    natsService.subscribe("element.created", handleElementCreated);
-    natsService.subscribe("element.updated", handleElementUpdated);
-    natsService.subscribe("element.deleted", handleElementDeleted);
+    try {
+      natsService.subscribe("sensor.created", handleElementCreated);
+      natsService.subscribe("sensor.updated", handleElementUpdated);
+      natsService.subscribe("element.created", handleElementCreated);
+      natsService.subscribe("element.updated", handleElementUpdated);
+      natsService.subscribe("element.deleted", handleElementDeleted);
+    } catch (error) {
+      showSnackbar("Error connecting to NATS: " + error.message, "error");
+    }
   }, [fetchElements]);
 
   return { elements, fetchElements, loading };

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import elementService from "@/services/elementService"; // Actualiza la importación
+import elementService from "@/services/elementService"; 
 import Modal from "@/core/components/Shared/Modal/Modal";
 import { useAuth } from "@/core/context/AuthContext";
 import useSensors from "@/core/hooks/useSensors";
@@ -20,7 +20,7 @@ const ElementForm = ({ element, onClose }) => {
     },
   });
   const { sensors } = useSensors();
-  const { showSnackbar } = useAuth();
+  const { showSnackbar, setLoading } = useAuth();
 
   useEffect(() => {
     if (element) {
@@ -34,6 +34,7 @@ const ElementForm = ({ element, onClose }) => {
   }, [element, setValue]);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const selectedSensors = sensors.filter((sensor) =>
         data.sensors.includes(sensor.id)
@@ -46,10 +47,12 @@ const ElementForm = ({ element, onClose }) => {
         await elementService.createElement(updatedElement);
         showSnackbar("Element created successfully!", "success");
       }
-      onClose();
     } catch (error) {
       showSnackbar("Failed to save element.", "error");
     }
+
+    onClose();
+    setLoading(false);
   };
 
   return (
@@ -101,9 +104,7 @@ const ElementForm = ({ element, onClose }) => {
             name="sensors"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 bg-white rounded"
             multiple
-            {...register("sensors", {
-              
-            })}
+            {...register("sensors", {})}
           >
             {sensors.map((sensor) => (
               <option key={sensor.id} value={sensor.id}>

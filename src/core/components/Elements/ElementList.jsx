@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import ElementTable from "@/core/components/Elements/ElementTable"; 
-import ElementForm from "@/core/components/Elements/ElementForm"; 
-import elementService from "@/services/elementService"; 
+import ElementTable from "@/core/components/Elements/ElementTable";
+import ElementForm from "@/core/components/Elements/ElementForm";
+import elementService from "@/services/elementService";
 import ConfirmationModal from "@/core/components/Shared/ConfirmationForm/ConfirmationForm";
-import useElements from "@/core/hooks/useElements"; 
+import useElements from "@/core/hooks/useElements";
 import { useAuth } from "@/core/context/AuthContext";
 
 const ElementList = () => {
-  const { elements, fetchElements, loading } = useElements(); 
-  const [editingElement, setEditingElement] = useState(null); 
-  const [showForm, setShowForm] = useState(false); 
-  const [showModal, setShowModal] = useState(false); 
-  const [selectedElement, setSelectedElement] = useState(null); 
-  const [selectedElements, setSelectedElements] = useState([]); 
-  const { showSnackbar } = useAuth();
+  const { elements, fetchElements } = useElements();
+  const [editingElement, setEditingElement] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedElement, setSelectedElement] = useState(null);
+  const [selectedElements, setSelectedElements] = useState([]);
+  const { showSnackbar, setLoading } = useAuth();
 
   const handleSelectionChanged = (selectedRows) => {
     setSelectedElements(selectedRows.map((row) => row.id));
   };
 
   const handleMultipleDelete = async () => {
+    setLoading(true);
     try {
       for (const elementId of selectedElements) {
         await elementService.deleteElement(elementId);
@@ -28,8 +29,9 @@ const ElementList = () => {
       fetchElements();
       showSnackbar("Elements deleted successfully!", "success");
     } catch (error) {
-      showSnackbar("Failed to delete elements.", "error");
+      showSnackbar("Failed to delete elements " + error, "error");
     }
+    setLoading(false);
   };
 
   const handleEdit = (element) => {
@@ -43,17 +45,20 @@ const ElementList = () => {
   };
 
   const handleConfirmDelete = async () => {
+    setLoading(true);
     try {
       if (selectedElement) {
         await elementService.deleteElement(selectedElement.id);
         fetchElements();
         showSnackbar("Element deleted successfully!", "success");
       }
-      setShowModal(false);
+
       setSelectedElement(null);
     } catch (error) {
-      showSnackbar("Failed to delete element.", "error");
+      showSnackbar("Failed to delete element " + error, "error");
     }
+    setShowModal(false);
+    setLoading(false);
   };
 
   const handleCancelDelete = () => {

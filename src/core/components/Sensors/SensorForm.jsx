@@ -19,7 +19,7 @@ const SensorForm = ({ sensor, onClose }) => {
     },
   });
 
-  const { showSnackbar } = useAuth();
+  const { showSnackbar, setLoading } = useAuth();
   
   useEffect(() => {
     if (sensor) {
@@ -31,6 +31,7 @@ const SensorForm = ({ sensor, onClose }) => {
   }, [sensor, setValue]);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       data.value = parseFloat(data.value);
       if (sensor) {
@@ -44,6 +45,7 @@ const SensorForm = ({ sensor, onClose }) => {
     } catch (error) {
       showSnackbar("Failed to save sensor.", "error");
     }
+    setLoading(false);
   };
 
   return (
