@@ -13,13 +13,14 @@ const SensorList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
   const [selectedSensors, setSelectedSensors] = useState([]);
-  const { showSnackbar } = useAuth();
+  const { showSnackbar, setLoading } = useAuth();
 
   const handleSelectionChanged = (selectedRows) => {
     setSelectedSensors(selectedRows.map((row) => row.id));
   };
 
   const handleMultipleDelete = async () => {
+    setLoading(true);
     try {
       for (const sensorId of selectedSensors) {
         await sensorService.deleteSensor(sensorId);
@@ -28,8 +29,9 @@ const SensorList = () => {
       fetchSensors();
       showSnackbar("Sensors deleted successfully!", "success");
     } catch (error) {
-      showSnackbar("Failed to delete sensors.", "error");
+      showSnackbar("Failed to delete sensors "+ error, "error");
     }
+    setLoading(false);
   };
 
   const handleEdit = (sensor) => {
@@ -43,6 +45,7 @@ const SensorList = () => {
   };
 
   const handleConfirmDelete = async () => {
+    setLoading(true);
     try {
       if (selectedSensor) {
         await sensorService.deleteSensor(selectedSensor.id);
@@ -52,8 +55,10 @@ const SensorList = () => {
       setShowModal(false);
       setSelectedSensor(null);
     } catch (error) {
-      showSnackbar("Failed to delete sensor.", "error");
+      showSnackbar("Failed to delete sensor:" + error, "error");
+      setShowModal(false);
     }
+    setLoading(false);
   };
 
   const handleCancelDelete = () => {

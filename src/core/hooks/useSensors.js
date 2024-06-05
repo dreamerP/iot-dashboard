@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import sensorService from "@/services/sensorService";
 import natsService from "@/services/natsService";
+import { useAuth } from "@/core/context/AuthContext";
 
 /**
  * Hook que gestiona el estado de los sensores y sus operaciones relacionadas.
@@ -13,6 +14,7 @@ import natsService from "@/services/natsService";
  */
 
 const useSensors = () => {
+  const { showSnackbar } = useAuth();
   const [sensors, setSensors] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +23,7 @@ const useSensors = () => {
       const sensors = await sensorService.getAllSensors();
       setSensors(sensors);
     } catch (error) {
-      console.error("Error fetching sensors:", error);
+      showSnackbar("Error fetching sensors: " + error.message, "error");
     } finally {
       setLoading(false);
     }
@@ -42,9 +44,13 @@ const useSensors = () => {
       fetchSensors();
     };
 
-    natsService.subscribe("sensor.created", handleSensorCreated);
-    natsService.subscribe("sensor.updated", handleSensorUpdated);
-    natsService.subscribe("sensor.deleted", handleSensorDeleted);
+    try {
+      natsService.subscribe("sensor.created", handleSensorCreated);
+      natsService.subscribe("sensor.updated", handleSensorUpdated);
+      natsService.subscribe("sensor.deleted", handleSensorDeleted);
+    } catch (error) {
+      showSnackbar("Error connecting to NATS: " + error.message, "error");
+    }
   }, [fetchSensors]);
 
   return { sensors, fetchSensors, loading };
